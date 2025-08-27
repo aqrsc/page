@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>알트코인 다중 시간대 자동 분석기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #2d3748;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        /* .btn 관련 스타일은 버튼이 제거되므로 주석 처리 또는 삭제 가능 */
+        /*
+        .btn {
+            background-color: #4a5568;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2c5282;
+        }
+        */
+        .current-price-section {
+            background-color: #374151;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .current-price-item {
+            text-align: center;
+            margin: 0.5rem;
+        }
+        .strategy-card { 
+            background-color: #4b5563; 
+            color: #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #6b7280;
+        }
+        .strategy-card h2 {
+            color: #fde047; 
+        }
+        .summary-table-container {
+            margin-bottom: 2rem;
+            background-color: #374151;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+        }
+        .summary-table-container h2 {
+             color: #e5e7eb;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        .summary-table th, .summary-table td {
+            border: 1px solid #4b5563;
+            padding: 0.75rem 0.5rem;
+            font-size: 0.875rem; 
+        }
+        .summary-table th {
+            background-color: #4b5563;
+            color: #e5e7eb;
+        }
+        .reasoning-card { 
+            background-color: #374151; 
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem; 
+        }
+        .reasoning-card h3 {
+            color: #93c5fd; 
+        }
+        .log-container {
+            background-color: #1f2937;
+            color: #9ca3af;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-top: 1.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.875rem;
+        }
+        .log-entry {
+            padding-bottom: 0.25rem;
+            border-bottom: 1px solid #374151;
+            margin-bottom: 0.25rem;
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .log-success { color: #34d399; }
+        .log-error { color: #f87171; }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .tradingview-widget-container {
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-white">알트코인 다중 시간대 자동 분석기</h1>
+            <p class="text-gray-400 mt-2">여러 시간대의 비트코인 및 도미넌스 추세를 종합 분석합니다. (5분마다 자동 갱신)</p>
+        </header>
+
+        <div id="loading" class="hidden text-center">
+            <div class="loader"></div>
+            <p class="text-gray-400">여러 시간대 데이터를 가져오고 분석하는 중...</p>
+        </div>
+        
+        <div id="currentPricesContainer" class="hidden current-price-section">
+             </div>
+        
+        <div id="strategyContainer" class="hidden strategy-card">
+            <h2 class="text-2xl font-bold mb-3 text-center">종합 매매 전략 가이드</h2>
+            <p id="strategyText" class="text-base"></p>
+        </div>
+
+        <div id="summaryTableContainer" class="hidden summary-table-container">
+            <h2 id="summaryTitle" class="text-2xl font-bold mb-4 text-center">시간대별 요약</h2>
+            <table id="summaryTable" class="summary-table">
+                <thead>
+                    <tr>
+                        <th>시간 간격</th>
+                        <th>BTC 추세</th>
+                        <th>BTCDOM 추세</th>
+                        <th>알트코인 예측</th>
+                    </tr>
+                </thead>
+                <tbody id="summaryTableBody">
+                    </tbody>
+            </table>
+        </div>
+
+        <div id="detailedReasoningContainer" class="mt-6">
+            <h2 id="detailedReasoningTitle" class="hidden text-2xl font-bold mb-4 text-center">시간대별 상세 분석 근거</h2>
+            </div>
+        
+        <div class="tradingview-widget-container" style="height:510px;width:100%;">
+          <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%;"></div>
+          <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+          {
+          "width": "100%", 
+          "height": "100%", 
+          "symbol": "NASDAQ:MSTR",
+          "interval": "D",
+          "timezone": "Etc/UTC",
+          "theme": "dark", 
+          "style": "1",
+          "locale": "ko", 
+          "allow_symbol_change": true,
+          "support_host": "https://www.tradingview.com"
+        }
+          </script>
+        </div>
+        <div id="errorMessage" class="hidden mt-4 p-4 bg-red-500 text-white rounded-md"></div>
+
+        <div id="apiLogContainer" class="log-container hidden">
+            <h3 class="text-lg font-semibold text-white mb-2">API 호출 로그</h3>
+            <div id="apiLogEntries"></div>
+        </div>
+    </div>
+
+    <script>
+        // API Endpoints
+        const KLINE_API_URL = 'https://fapi.binance.com/fapi/v1/klines';
+        const TICKER_API_URL = 'https://fapi.binance.com/fapi/v1/ticker/24hr';
+
+        // DOM Elements
+        // const analyzeBtn = document.getElementById('analyzeBtn'); // 버튼 제거로 주석 처리
+        const loadingDiv = document.getElementById('loading');
+        const currentPricesContainerDiv = document.getElementById('currentPricesContainer');
+        const strategyContainerDiv = document.getElementById('strategyContainer'); 
+        const strategyTextP = document.getElementById('strategyText'); 
+        const summaryTableContainerDiv = document.getElementById('summaryTableContainer'); 
+        const summaryTitleH2 = document.getElementById('summaryTitle'); 
+        const summaryTableBody = document.getElementById('summaryTableBody'); 
+        const detailedReasoningContainerDiv = document.getElementById('detailedReasoningContainer'); 
+        const detailedReasoningTitle = document.getElementById('detailedReasoningTitle'); 
+        const errorMessageDiv = document.getElementById('errorMessage');
+        const apiLogContainerDiv = document.getElementById('apiLogContainer');
+        const apiLogEntriesDiv = document.getElementById('apiLogEntries');
+
+        // Analysis Parameters
+        const KLINE_LIMIT = 100; 
+        const TREND_THRESHOLD_PERCENT = {
+            '5m': 0.2, '15m': 0.3, '1h': 0.5, '4h': 0.8, '1d': 1.0
+        };
+        const SMA_SHORT_PERIOD = 5;  
+        const SMA_LONG_PERIOD = 20; 
+        const RSI_PERIOD = 14;      
+        const RSI_OVERBOUGHT = 70;
+        const RSI_OVERSOLD = 30;
+        const PATTERN_TOLERANCE = 0.025; 
+        const INTERVALS_TO_ANALYZE = ['5m', '15m', '1h', '4h', '1d'];
+        const SHORT_TERM_INTERVALS = ['5m', '15m']; 
+        const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5분
+        let analysisTimeoutId = null; // 자동 갱신 타이머 ID
+
+        /**
+         * Adds an API log entry to the UI.
+         */
+        function addApiLog(message, isError = false) {
+            apiLogContainerDiv.classList.remove('hidden');
+            const logEntry = document.createElement('div');
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logEntry.className = 'log-entry';
+            if (isError) { logEntry.classList.add('log-error'); } 
+            else { logEntry.classList.add('log-success'); }
+            apiLogEntriesDiv.appendChild(logEntry);
+            apiLogEntriesDiv.scrollTop = apiLogEntriesDiv.scrollHeight;
+        }
+
+        /**
+         * Clears all API log entries from the UI.
+         */
+        function clearApiLogs() {
+            apiLogEntriesDiv.innerHTML = '';
+        }
+
+        /**
+         * Fetches data from the given URL.
+         */
+        async function fetchData(url, isTicker = false) {
+            addApiLog(`Requesting: ${url}`);
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ msg: "Failed to parse error response JSON" }));
+                    const errorMessage = `API Error: ${response.status} - ${errorData.msg || response.statusText} (URL: ${url})`;
+                    addApiLog(errorMessage, true);
+                    if (isTicker) {
+                        showError(`현재가 요청 실패: ${errorData.msg || response.statusText}`);
+                    }
+                    throw new Error(errorMessage);
+                }
+                addApiLog(`Success: ${url} (Status: ${response.status})`);
+                return await response.json();
+            } catch (error) {
+                if (!error.message.includes("API Error") && isTicker) { 
+                    addApiLog(`Fetch Error (Ticker): ${error.message} (URL: ${url.substring(0,100)}...)`, true);
+                    showError(`현재가 요청 중 네트워크 오류 또는 기타 문제: ${error.message}`);
+                } else if (!error.message.includes("API Error")) {
+                    addApiLog(`Fetch Error (Kline): ${error.message} (URL: ${url.substring(0,100)}...)`, true);
+                }
+                console.error('Fetch error details:', error);
+                throw error; 
+            }
+        }
+        
+        /**
+         * Fetches the current price for a given symbol.
+         */
+        async function getSymbolCurrentPrice(symbol) {
+            const tickerUrl = `${TICKER_API_URL}?symbol=${symbol}`;
+            try {
+                const tickerData = await fetchData(tickerUrl, true);
+                return { price: parseFloat(tickerData.lastPrice), error: false };
+            } catch (error) {
+                addApiLog(`${symbol} 현재가 가져오기 실패: ${error.message}`, true);
+                return { price: "N/A", error: true, message: `${symbol} 현재가 로딩 실패` };
+            }
+        }
+
+        /**
+         * Calculates Simple Moving Average (SMA).
+         */
+        function calculateSMA(data, period) {
+            if (!data || data.length < period) return null;
+            const relevantData = data.slice(data.length - period);
+            const sum = relevantData.reduce((acc, val) => acc + val, 0);
+            return sum / period;
+        }
+
+        /**
+         * Calculates Relative Strength Index (RSI) series.
+         */
+        function calculateRSISeries(closes, period) {
+            if (!closes || closes.length < period + 1) { 
+                return []; 
+            }
+            const rsiSeries = [];
+            const changes = []; 
+            for (let i = 1; i < closes.length; i++) {
+                changes.push(closes[i] - closes[i - 1]);
+            }
+            if (changes.length < period) return [];
+            let gains = 0; 
+            let losses = 0; 
+            for (let i = 0; i < period; i++) {
+                if (changes[i] > 0) {
+                    gains += changes[i];
+                } else {
+                    losses += Math.abs(changes[i]);
+                }
+            }
+            let avgGain = gains / period;
+            let avgLoss = losses / period;
+            if (avgLoss === 0) { 
+                rsiSeries.push(100);
+            } else {
+                const rs = avgGain / avgLoss; 
+                rsiSeries.push(100 - (100 / (1 + rs)));
+            }
+            for (let i = period; i < changes.length; i++) {
+                let currentGain = 0;
+                let currentLoss = 0;
+                if (changes[i] > 0) {
+                    currentGain = changes[i];
+                } else {
+                    currentLoss = Math.abs(changes[i]);
+                }
+                avgGain = (avgGain * (period - 1) + currentGain) / period;
+                avgLoss = (avgLoss * (period - 1) + currentLoss) / period;
+                if (avgLoss === 0) {
+                    rsiSeries.push(100);
+                } else {
+                    const rs = avgGain / avgLoss;
+                    rsiSeries.push(100 - (100 / (1 + rs)));
+                }
+            }
+            return rsiSeries;
+        }
+        
+        /**
+         * Finds significant peaks in a data series.
+         */
+        function getPeaks(series) {
+            const peaks = [];
+            if (series.length < 3) return peaks; 
+            for (let i = 1; i < series.length - 1; i++) {
+                if (series[i] > series[i-1] && series[i] > series[i+1]) {
+                    peaks.push({ index: i, value: series[i] });
+                }
+            }
+            return peaks;
+        }
+
+        /**
+         * Finds significant troughs in a data series.
+         */
+        function getTroughs(series) {
+            const troughs = [];
+            if (series.length < 3) return troughs; 
+            for (let i = 1; i < series.length - 1; i++) {
+                if (series[i] < series[i-1] && series[i] < series[i+1]) {
+                    troughs.push({ index: i, value: series[i] });
+                }
+            }
+            return troughs;
+        }
+
+        /**
+         * Gets trend and reasoning for a symbol based on K-line data.
+         */
+        async function getTrendAndReasoningFromKlines(symbol, interval) {
+            try {
+                const klineUrl = `${KLINE_API_URL}?symbol=${symbol}&interval=${interval}&limit=${KLINE_LIMIT}`;
+                const klineData = await fetchData(klineUrl, false);
+                
+                if (!klineData || klineData.length === 0) {
+                    const msg = `${symbol} (${interval}): K-line 데이터를 가져오지 못했습니다.`;
+                    addApiLog(msg, true);
+                    return { interval: interval, symbol: symbol, trend: "데이터 부족", reasoning: "K-line 데이터 없음.", error: true };
+                }
+
+                const closes = klineData.map(k => parseFloat(k[4]));
+                const actualKlineCount = closes.length; 
+                let reasoningParts = []; 
+                let trend = "횡보 (Sideways)"; 
+                const priceChangeThreshold = TREND_THRESHOLD_PERCENT[interval] || 0.5;
+                let trendSetByTechnicalIndicator = false; 
+                let patternInfluencedTrend = false; 
+
+                try {
+                    // A. SMA 분석
+                    if (actualKlineCount >= SMA_LONG_PERIOD) { 
+                        const smaShortValue = calculateSMA(closes, SMA_SHORT_PERIOD);
+                        const smaLongValue = calculateSMA(closes, SMA_LONG_PERIOD);
+                        const currentRefPrice = closes[actualKlineCount - 1]; 
+                        if (smaShortValue !== null && smaLongValue !== null) {
+                            reasoningParts.push(`단기SMA(${SMA_SHORT_PERIOD}): ${smaShortValue.toFixed(4)}`, `장기SMA(${SMA_LONG_PERIOD}): ${smaLongValue.toFixed(4)}`);
+                            if (currentRefPrice > smaLongValue && smaShortValue > smaLongValue) { 
+                                trend = "상승 (Long)";
+                                reasoningParts.push("현재가 및 단기SMA > 장기SMA (강세 신호)");
+                                trendSetByTechnicalIndicator = true;
+                            } else if (currentRefPrice < smaLongValue && smaShortValue < smaLongValue) { 
+                                trend = "하락 (Short)";
+                                reasoningParts.push("현재가 및 단기SMA < 장기SMA (약세 신호)");
+                                trendSetByTechnicalIndicator = true;
+                            } else {
+                                reasoningParts.push("SMA 혼조 또는 현재가 SMA 근접 (중립 신호)");
+                            }
+                        } else { reasoningParts.push("SMA 계산 불가 (데이터 부족)"); }
+                    } else { reasoningParts.push(`SMA 분석 위한 데이터 부족 (${actualKlineCount}/${SMA_LONG_PERIOD}개 캔들)`); }
+                    
+                    // B. RSI 분석
+                    const rsiSeries = calculateRSISeries(closes, RSI_PERIOD); 
+                    const pricePeaks = getPeaks(closes); 
+                    const priceTroughs = getTroughs(closes);
+                    if (rsiSeries.length > 0) { 
+                        const lastRsiValue = rsiSeries[rsiSeries.length - 1]; 
+                        let rsiInterpretation = `RSI(${RSI_PERIOD}): ${lastRsiValue.toFixed(2)}`;
+                        if (lastRsiValue > RSI_OVERBOUGHT) rsiInterpretation += " (과매수 구간)";
+                        else if (lastRsiValue < RSI_OVERSOLD) rsiInterpretation += " (과매도 구간)";
+                        else rsiInterpretation += " (중립 구간)";
+                        reasoningParts.push(rsiInterpretation);
+                        
+                        if (pricePeaks.length >= 2) {
+                            const peakCandidate2 = pricePeaks[pricePeaks.length - 1];
+                            const peakCandidate1 = pricePeaks[pricePeaks.length - 2];
+                            if (peakCandidate1 && typeof peakCandidate1 === 'object' && peakCandidate1.hasOwnProperty('index') && peakCandidate1.hasOwnProperty('value') &&
+                                peakCandidate2 && typeof peakCandidate2 === 'object' && peakCandidate2.hasOwnProperty('index') && peakCandidate2.hasOwnProperty('value')) {
+                                if (peakCandidate2.index > peakCandidate1.index && peakCandidate2.value > peakCandidate1.value) { 
+                                    const rsiIndexP1 = peakCandidate1.index - RSI_PERIOD;
+                                    const rsiIndexP2 = peakCandidate2.index - RSI_PERIOD;
+                                    if (rsiIndexP1 >= 0 && rsiIndexP1 < rsiSeries.length &&
+                                        rsiIndexP2 >= 0 && rsiIndexP2 < rsiSeries.length) {
+                                        if (rsiSeries[rsiIndexP2] < rsiSeries[rsiIndexP1]) { 
+                                            reasoningParts.push(`RSI 약세 다이버전스 가능성 (가격 HH, RSI LH)`);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (priceTroughs.length >= 2) {
+                            const troughCandidate2 = priceTroughs[priceTroughs.length - 1];
+                            const troughCandidate1 = priceTroughs[priceTroughs.length - 2];
+                            if (troughCandidate1 && typeof troughCandidate1 === 'object' && troughCandidate1.hasOwnProperty('index') && troughCandidate1.hasOwnProperty('value') &&
+                                troughCandidate2 && typeof troughCandidate2 === 'object' && troughCandidate2.hasOwnProperty('index') && troughCandidate2.hasOwnProperty('value')) {
+                                if (troughCandidate2.index > troughCandidate1.index && troughCandidate2.value < troughCandidate1.value) { 
+                                    const rsiIndexT1 = troughCandidate1.index - RSI_PERIOD;
+                                    const rsiIndexT2 = troughCandidate2.index - RSI_PERIOD;
+                                     if (rsiIndexT1 >= 0 && rsiIndexT1 < rsiSeries.length &&
+                                        rsiIndexT2 >= 0 && rsiIndexT2 < rsiSeries.length) {
+                                        if (rsiSeries[rsiIndexT2] > rsiSeries[rsiIndexT1]) { 
+                                            reasoningParts.push(`RSI 강세 다이버전스 가능성 (가격 LL, RSI HL)`);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else { reasoningParts.push(`RSI 분석 위한 데이터 부족 (${actualKlineCount}/${RSI_PERIOD + 1}개 캔들)`);}
+
+                    // C. 차트 패턴
+                    if (pricePeaks.length >= 2) {
+                        const pk2_cand = pricePeaks[pricePeaks.length - 1]; 
+                        const pk1_cand = pricePeaks[pricePeaks.length - 2]; 
+                        if (pk1_cand && typeof pk1_cand === 'object' && pk1_cand.hasOwnProperty('value') && pk1_cand.hasOwnProperty('index') &&
+                            pk2_cand && typeof pk2_cand === 'object' && pk2_cand.hasOwnProperty('value') && pk2_cand.hasOwnProperty('index')) {
+                            if (pk2_cand.index > pk1_cand.index && Math.abs(pk2_cand.value - pk1_cand.value) / pk1_cand.value < PATTERN_TOLERANCE) {
+                                let interimTroughValue = Infinity; let interimTroughIndex = -1;
+                                for (let i = pk1_cand.index + 1; i < pk2_cand.index; i++) { if (closes[i] < interimTroughValue) { interimTroughValue = closes[i]; interimTroughIndex = i;}}
+                                if (interimTroughIndex !== -1) { 
+                                    if (closes[actualKlineCount - 1] < interimTroughValue) { 
+                                        reasoningParts.push(`차트 패턴: 더블 탑 가능성 (넥라인 ${interimTroughValue.toFixed(4)} 하향 돌파)`);
+                                        if (!trendSetByTechnicalIndicator || trend !== "하락 (Short)") { trend = "하락 (Short)"; patternInfluencedTrend = true;}
+                                    } else { reasoningParts.push(`차트 패턴: 더블 탑 형성 중 (넥라인 ${interimTroughValue.toFixed(4)})`);}
+                                }
+                            }
+                        }
+                    }
+                    if (priceTroughs.length >= 2) {
+                        const tr2_cand = priceTroughs[priceTroughs.length - 1]; 
+                        const tr1_cand = priceTroughs[priceTroughs.length - 2]; 
+                        if (tr1_cand && typeof tr1_cand === 'object' && tr1_cand.hasOwnProperty('value') && tr1_cand.hasOwnProperty('index') &&
+                            tr2_cand && typeof tr2_cand === 'object' && tr2_cand.hasOwnProperty('value') && tr2_cand.hasOwnProperty('index')) {
+                            if (tr2_cand.index > tr1_cand.index && Math.abs(tr2_cand.value - tr1_cand.value) / tr1_cand.value < PATTERN_TOLERANCE) {
+                                let interimPeakValue = -Infinity; let interimPeakIndex = -1;
+                                for (let i = tr1_cand.index + 1; i < tr2_cand.index; i++) { if (closes[i] > interimPeakValue) { interimPeakValue = closes[i]; interimPeakIndex = i;}}
+                                if (interimPeakIndex !== -1) { 
+                                    if (closes[actualKlineCount - 1] > interimPeakValue) { 
+                                        reasoningParts.push(`차트 패턴: 더블 바텀 가능성 (넥라인 ${interimPeakValue.toFixed(4)} 상향 돌파)`);
+                                        if (!trendSetByTechnicalIndicator || trend !== "상승 (Long)") { trend = "상승 (Long)"; patternInfluencedTrend = true;}
+                                    } else { reasoningParts.push(`차트 패턴: 더블 바텀 형성 중 (넥라인 ${interimPeakValue.toFixed(4)})`);}
+                                }
+                            }
+                        }
+                    }
+                    // D. 가격 변화율
+                    if (!patternInfluencedTrend && actualKlineCount > 1) { 
+                        const firstClose = closes[0]; const lastClose = closes[actualKlineCount - 1]; 
+                        const percentageChange = ((lastClose - firstClose) / firstClose) * 100;
+                        if (percentageChange > priceChangeThreshold) { 
+                            if (!trendSetByTechnicalIndicator || trend === "횡보 (Sideways)") { trend = "상승 (Long)"; }
+                            reasoningParts.push(`최근 ${actualKlineCount}캔들 ${percentageChange.toFixed(2)}% 상승`);
+                        } else if (percentageChange < -priceChangeThreshold) { 
+                            if (!trendSetByTechnicalIndicator || trend === "횡보 (Sideways)") { trend = "하락 (Short)"; }
+                            reasoningParts.push(`최근 ${actualKlineCount}캔들 ${percentageChange.toFixed(2)}% 하락`);
+                        } else { reasoningParts.push(`최근 ${actualKlineCount}캔들 가격 변동폭 작음 (${percentageChange.toFixed(2)}%)`);}
+                    } else if (actualKlineCount <= 1) { reasoningParts.push("가격 변화율 분석 위한 데이터 부족 (캔들 수 < 2)");}
+                    if (trend === "횡보 (Sideways)" && !trendSetByTechnicalIndicator && !patternInfluencedTrend && !reasoningParts.some(r => r.includes("변동폭 작음") || r.includes("혼조") || r.includes("중립"))) {
+                         reasoningParts.push("뚜렷한 방향성 확인 어려움");
+                    }
+                } catch (calcError) {
+                    console.error(`${symbol} (${interval}) 지표 계산 중 오류:`, calcError);
+                    addApiLog(`${symbol} (${interval}) 지표 계산 중 오류: ${calcError.message}`, true);
+                    reasoningParts.push(`지표 계산 중 내부 오류 발생: ${calcError.message}`);
+                    return { interval: interval, symbol: symbol, trend: "계산 오류", reasoning: reasoningParts.join('; ') + `. ${calcError.message}`, error: true };
+                }
+
+                const finalReasoning = `분석 기준: ${reasoningParts.join('; ')}`;
+                return { interval: interval, symbol: symbol, trend: trend, reasoning: finalReasoning, error: false };
+
+            } catch (error) { 
+                addApiLog(`${symbol} (${interval}) K-line 데이터 처리 중 주요 오류: ${error.message || "세부 정보 없음"}`, true);
+                return { interval: interval, symbol: symbol, trend: "데이터 오류", reasoning: `${symbol} (${interval}) K-line 데이터 처리 중 주요 오류 발생.`, error: true };
+            }
+        }
+
+        /**
+         * Determines altcoin direction based on BTC and DOM trends using refined terminology.
+         */
+        function determineAltcoinDirection(btcTrend, domTrend) {
+            if (!btcTrend || !domTrend || btcTrend.includes("오류") || domTrend.includes("오류") || btcTrend.includes("데이터 부족") || domTrend.includes("데이터 부족")) {
+                return "분석 불가 (데이터 오류)";
+            }
+            if (btcTrend === "상승 (Long)") {
+                if (domTrend === "상승 (Long)") return "알트코인 완만한 상승세";
+                if (domTrend === "하락 (Short)") return "알트코인 단기 급등 기대";
+                if (domTrend === "횡보 (Sideways)") return "알트코인 완만한 상승세 (비트 영향)";
+            } else if (btcTrend === "하락 (Short)") {
+                if (domTrend === "상승 (Long)") return "알트코인 급락 위험";
+                if (domTrend === "하락 (Short)") return "알트코인 점진적 하락";
+                if (domTrend === "횡보 (Sideways)") return "알트코인 점진적 하락 (비트 영향)";
+            } else if (btcTrend === "횡보 (Sideways)") {
+                if (domTrend === "상승 (Long)") return "알트코인 하락 압력";
+                if (domTrend === "하락 (Short)") return "알트코인 상승 기대";
+                if (domTrend === "횡보 (Sideways)") return "알트코인 횡보 또는 개별 종목 장세";
+            }
+            return "분석 조건 없음"; 
+        }
+        
+        /**
+         * Generates an overall trading strategy based on multi-timeframe analysis.
+         */
+        function generateOverallTradingStrategy(analysesByInterval) {
+            let btcLongCount = 0, btcShortCount = 0, btcSidewaysCount = 0;
+            let domLongCount = 0, domShortCount = 0, domSidewaysCount = 0;
+            let validIntervals = 0;
+            let shortTermAltPositiveSignal = false;
+
+            INTERVALS_TO_ANALYZE.forEach(interval => {
+                const analysis = analysesByInterval[interval];
+                if (analysis && analysis.btcTrendData && !analysis.btcTrendData.error && analysis.domTrendData && !analysis.domTrendData.error) {
+                    validIntervals++;
+                    if (analysis.btcTrendData.trend === "상승 (Long)") btcLongCount++;
+                    else if (analysis.btcTrendData.trend === "하락 (Short)") btcShortCount++;
+                    else btcSidewaysCount++;
+                    if (analysis.domTrendData.trend === "상승 (Long)") domLongCount++;
+                    else if (analysis.domTrendData.trend === "하락 (Short)") domShortCount++;
+                    else domSidewaysCount++;
+
+                    if (SHORT_TERM_INTERVALS.includes(interval) && analysis.altPrediction) {
+                        if (analysis.altPrediction.includes("단기 급등 기대") || analysis.altPrediction.includes("상승 기대") || analysis.altPrediction.includes("완만한 상승세")) {
+                            shortTermAltPositiveSignal = true;
+                        }
+                    }
+                }
+            });
+
+            if (validIntervals < 3) { 
+                return "분석 가능한 시간대 데이터가 부족하여 종합 전략을 제시하기 어렵습니다. 각 시간대별 분석을 참고해주세요.";
+            }
+
+            const majority = Math.ceil(validIntervals / 2); 
+            
+            let dominantBtcTrend = "혼조";
+            if (btcLongCount >= majority) dominantBtcTrend = "상승";
+            else if (btcShortCount >= majority) dominantBtcTrend = "하락";
+            else if (btcSidewaysCount >= majority) dominantBtcTrend = "횡보";
+
+            let dominantDomTrend = "혼조";
+            if (domLongCount >= majority) dominantDomTrend = "상승";
+            else if (domShortCount >= majority) dominantDomTrend = "하락";
+            else if (domSidewaysCount >= majority) dominantDomTrend = "횡보";
+
+            let strategyMessage = "";
+
+            if (dominantBtcTrend === "상승") {
+                if (dominantDomTrend === "하락") strategyMessage = "전반적인 강세장 예상. 비트코인 상승과 함께 알트코인 유동성 유입으로 알트코인 전반의 강한 랠리 기대. 적극적인 매수 및 보유 전략 고려.";
+                else if (dominantDomTrend === "상승") strategyMessage = "비트코인 주도 상승장. 비트코인 강세, 알트코인은 상대적 약세 또는 비트코인 추종 가능성. 알트코인 선별적 접근 및 비중 조절 필요.";
+                else strategyMessage = "비트코인 상승세 우세. 도미넌스 방향성에 따라 알트코인 변동성 예상. 위험 관리 동반한 선별적 매수 전략 유효.";
+            } else if (dominantBtcTrend === "하락") {
+                if (dominantDomTrend === "상승") {
+                    strategyMessage = "시장 전반적 하락 위험 고조. 비트코인 하락 및 도미넌스 상승으로 알트코인 자금 이탈 가속화, 알트코인 급락 위험 매우 높음. 현금 보유 및 방어적 포지션 유리.";
+                    if (shortTermAltPositiveSignal) {
+                        strategyMessage += " 다만, 매우 높은 위험을 감수하는 단기 트레이더는 초단기 기술적 반등을 노린 제한적 매매를 고려할 수 있으나, 전반적인 하락 추세에 각별히 유의해야 합니다.";
+                    }
+                } else if (dominantDomTrend === "하락") {
+                    strategyMessage = "시장 전반적 투자 심리 위축. 비트코인과 도미넌스 동반 하락은 자금 이탈 신호일 수 있으며, 알트코인도 동반 약세 또는 변동성 확대 가능성. 보수적 접근 및 관망.";
+                } else {
+                    strategyMessage = "비트코인 약세 우세. 도미넌스 방향성에 따라 알트코인 하방 압력 또는 제한적 움직임 예상. 매매 자제 및 추세 전환 신호 확인 필요.";
+                }
+            } else if (dominantBtcTrend === "횡보") {
+                if (dominantDomTrend === "하락") strategyMessage = "비트코인 횡보 속 도미넌스 하락. 일부 알트코인으로 자금 유입되며 개별 알트코인 강세 또는 순환매 장세 기대. 단기 트레이딩 기회 포착 전략 유효.";
+                else if (dominantDomTrend === "상승") strategyMessage = "비트코인 횡보 속 도미넌스 상승. 알트코인 자금 유출로 전반적인 약세 또는 하락 압력 증가. 매수 자제 및 위험 관리.";
+                else strategyMessage = "시장 방향성 탐색 구간. 비트코인 및 도미넌스 모두 뚜렷한 추세 부재. 알트코인 개별 이슈에 따른 변동성 장세 또는 전반적 관망세. 단기 변동성 활용한 매매 또는 관망.";
+            } else { 
+                 strategyMessage = "다양한 시간대 분석 결과가 혼재되어 명확한 시장 방향성을 예측하기 어렵습니다. 신중한 접근과 추가적인 시장 상황 확인이 필요합니다. 각 시간대별 분석을 면밀히 검토하세요.";
+            }
+            
+            return strategyMessage;
+        }
+
+
+        /**
+         * Renders the analysis results for multiple intervals in the UI.
+         * @param {Object} overallData - Object containing current prices, analysis time, and interval analyses.
+         */
+        function renderMultiIntervalResults(overallData) {
+            currentPricesContainerDiv.innerHTML = ''; 
+            summaryTableBody.innerHTML = ''; 
+            detailedReasoningContainerDiv.innerHTML = ''; 
+            strategyContainerDiv.classList.add('hidden'); 
+            summaryTableContainerDiv.classList.add('hidden');
+            detailedReasoningTitle.classList.add('hidden');
+            
+            let currentPricesHtml = '';
+            if (overallData.currentBtcPrice && !overallData.currentBtcPrice.error) {
+                currentPricesHtml += `
+                    <div class="current-price-item">
+                        <h4 class="text-lg font-medium text-white mb-1">현재 BTC 가격</h4>
+                        <p class="text-xl font-semibold ${getTrendClass('상승')}">${overallData.currentBtcPrice.price.toLocaleString()} USDT</p>
+                    </div>`;
+            } else {
+                currentPricesHtml += `
+                    <div class="current-price-item">
+                        <h4 class="text-lg font-medium text-white mb-1">현재 BTC 가격</h4>
+                        <p class="text-xl font-semibold text-red-400">${overallData.currentBtcPrice.message || '로딩 실패'}</p>
+                    </div>`;
+            }
+
+            if (overallData.currentDomValue && !overallData.currentDomValue.error) {
+                 currentPricesHtml += `
+                    <div class="current-price-item">
+                        <h4 class="text-lg font-medium text-white mb-1">현재 BTCDOM 값</h4>
+                        <p class="text-xl font-semibold ${getTrendClass('상승')}">${overallData.currentDomValue.price.toLocaleString()}</p>
+                    </div>`;
+            } else {
+                currentPricesHtml += `
+                    <div class="current-price-item">
+                        <h4 class="text-lg font-medium text-white mb-1">현재 BTCDOM 값</h4>
+                        <p class="text-xl font-semibold text-red-400">${overallData.currentDomValue.message || '로딩 실패'}</p>
+                    </div>`;
+            }
+            currentPricesContainerDiv.innerHTML = currentPricesHtml;
+            currentPricesContainerDiv.classList.remove('hidden');
+
+            const strategy = generateOverallTradingStrategy(overallData.analysesByInterval);
+            strategyTextP.textContent = strategy;
+            strategyContainerDiv.classList.remove('hidden');
+
+            summaryTitleH2.textContent = `시간대별 요약 (분석 시각: ${overallData.analysisTime})`;
+
+            const intervalAnalyses = Object.values(overallData.analysesByInterval);
+            let hasValidAnalysis = false;
+
+            intervalAnalyses.forEach(analysis => {
+                if (!analysis || !analysis.interval) return; 
+
+                const btcTrend = analysis.btcTrendData && !analysis.btcTrendData.error ? analysis.btcTrendData.trend : "오류";
+                const domTrend = analysis.domTrendData && !analysis.domTrendData.error ? analysis.domTrendData.trend : "오류";
+                const altPrediction = analysis.altPrediction || "분석 불가";
+                
+                const summaryRow = summaryTableBody.insertRow();
+                summaryRow.innerHTML = `
+                    <td>${analysis.interval}</td>
+                    <td class="${getTrendClass(btcTrend)}">${btcTrend}</td>
+                    <td class="${getTrendClass(domTrend)}">${domTrend}</td>
+                    <td class="${getAltPredictionClass(altPrediction)}">${altPrediction}</td>
+                `;
+                hasValidAnalysis = true;
+
+                const reasoningCard = document.createElement('div');
+                reasoningCard.className = 'reasoning-card';
+                
+                let btcReasoningHtml = `<p class="text-red-400">BTC 추세 근거 분석 오류 또는 데이터 없음</p>`;
+                if (analysis.btcTrendData && !analysis.btcTrendData.error) {
+                    btcReasoningHtml = `<p class="text-gray-300 text-sm">${analysis.btcTrendData.reasoning}</p>`;
+                } else if (analysis.btcTrendData && analysis.btcTrendData.error) {
+                    btcReasoningHtml = `<p class="text-red-400">BTC 추세 근거 분석 오류: ${analysis.btcTrendData.reasoning || '세부 정보 없음'}</p>`;
+                }
+
+                let domReasoningHtml = `<p class="text-red-400">BTCDOM 추세 근거 분석 오류 또는 데이터 없음</p>`;
+                if (analysis.domTrendData && !analysis.domTrendData.error) {
+                    domReasoningHtml = `<p class="text-gray-300 text-sm">${analysis.domTrendData.reasoning}</p>`;
+                } else if (analysis.domTrendData && analysis.domTrendData.error) {
+                    domReasoningHtml = `<p class="text-red-400">BTCDOM 추세 근거 분석 오류: ${analysis.domTrendData.reasoning || '세부 정보 없음'}</p>`;
+                }
+
+                reasoningCard.innerHTML = `
+                    <h3 class="text-xl font-semibold mb-3">${analysis.interval} 상세 분석 근거</h3>
+                    <div class="mb-3">
+                        <h4 class="text-lg font-medium text-white mb-1">비트코인 (BTCUSDT) 추세 근거:</h4>
+                        ${btcReasoningHtml}
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-medium text-white mb-1">비트코인 도미넌스 (BTCDOMUSDT) 추세 근거:</h4>
+                        ${domReasoningHtml}
+                    </div>
+                `;
+                detailedReasoningContainerDiv.appendChild(reasoningCard);
+            });
+
+            if (hasValidAnalysis) {
+                summaryTableContainerDiv.classList.remove('hidden');
+                detailedReasoningTitle.classList.remove('hidden');
+            } else {
+                 summaryTableContainerDiv.innerHTML = '<p class="text-center text-gray-400">시간대별 요약 데이터가 없습니다.</p>';
+                 summaryTableContainerDiv.classList.remove('hidden');
+                 detailedReasoningContainerDiv.innerHTML = '<p class="text-center text-gray-400">상세 분석 근거 데이터가 없습니다.</p>';
+            }
+        }
+
+        /**
+         * Gets Tailwind CSS class for trend text color.
+         */
+        function getTrendClass(trend) {
+            if (!trend) return 'font-medium text-gray-300';
+            if (trend.includes("상승") || trend.includes("Long")) return 'font-medium text-green-400';
+            if (trend.includes("하락") || trend.includes("Short")) return 'font-medium text-red-400';
+            if (trend.includes("횡보")) return 'font-medium text-yellow-400';
+            return 'font-medium text-gray-300'; 
+        }
+
+        /**
+         * Gets Tailwind CSS class for altcoin prediction text.
+         */
+        function getAltPredictionClass(prediction) {
+            if (!prediction) return 'font-bold text-gray-100';
+            if (prediction.includes("단기 급등 기대") || prediction.includes("상승 기대")) return 'font-bold text-green-300';
+            if (prediction.includes("급락 위험") || prediction.includes("하락 압력")) return 'font-bold text-red-300';
+            if (prediction.includes("완만한 상승세")) return 'font-bold text-green-500';
+            if (prediction.includes("점진적 하락")) return 'font-bold text-red-500';
+            if (prediction.includes("횡보")) return 'font-bold text-yellow-300';
+            return 'font-bold text-gray-100'; 
+        }
+
+        /**
+         * Displays an error message in the UI.
+         */
+        function showError(message) {
+            errorMessageDiv.textContent = message;
+            errorMessageDiv.classList.remove('hidden');
+        }
+
+        /**
+         * Clears the error message from the UI.
+         */
+        function clearError() {
+            errorMessageDiv.classList.add('hidden');
+            errorMessageDiv.textContent = '';
+        }
+
+        /**
+         * Main function to perform analysis and schedule the next one.
+         */
+        async function performAnalysis() {
+            if (analysisTimeoutId) { // 이전 타이머가 있다면 클리어
+                clearTimeout(analysisTimeoutId);
+                analysisTimeoutId = null;
+            }
+
+            clearError();
+            clearApiLogs(); 
+            currentPricesContainerDiv.classList.add('hidden'); 
+            strategyContainerDiv.classList.add('hidden'); 
+            summaryTableContainerDiv.classList.add('hidden');
+            summaryTableBody.innerHTML = '';
+            detailedReasoningContainerDiv.innerHTML = '';
+            detailedReasoningTitle.classList.add('hidden');
+            loadingDiv.classList.remove('hidden'); 
+            // analyzeBtn.disabled = true; // 버튼이 없으므로 주석 처리
+
+            const analysisStartTime = new Date().toLocaleString('ko-KR'); 
+
+            const overallData = {
+                currentBtcPrice: null,
+                currentDomValue: null,
+                analysesByInterval: {},
+                analysisTime: analysisStartTime 
+            };
+
+            try {
+                const [btcPriceResult, domPriceResult] = await Promise.all([
+                    getSymbolCurrentPrice('BTCUSDT'),
+                    getSymbolCurrentPrice('BTCDOMUSDT')
+                ]);
+                overallData.currentBtcPrice = btcPriceResult;
+                overallData.currentDomValue = domPriceResult;
+
+                const trendPromises = [];
+                INTERVALS_TO_ANALYZE.forEach(interval => {
+                    trendPromises.push(getTrendAndReasoningFromKlines('BTCUSDT', interval));
+                    trendPromises.push(getTrendAndReasoningFromKlines('BTCDOMUSDT', interval));
+                });
+            
+                const trendResults = await Promise.allSettled(trendPromises);
+
+                trendResults.forEach(result => {
+                    if (result.status === 'fulfilled' && result.value) {
+                        const data = result.value; 
+                        if (!overallData.analysesByInterval[data.interval]) {
+                            overallData.analysesByInterval[data.interval] = { interval: data.interval };
+                        }
+                        if (data.symbol === 'BTCUSDT') {
+                            overallData.analysesByInterval[data.interval].btcTrendData = data;
+                        } else if (data.symbol === 'BTCDOMUSDT') {
+                            overallData.analysesByInterval[data.interval].domTrendData = data;
+                        }
+                        
+                        const currentIntervalAnalysis = overallData.analysesByInterval[data.interval];
+                        if (currentIntervalAnalysis.btcTrendData && currentIntervalAnalysis.domTrendData) {
+                            currentIntervalAnalysis.altPrediction = determineAltcoinDirection(
+                                currentIntervalAnalysis.btcTrendData.trend,
+                                currentIntervalAnalysis.domTrendData.trend
+                            );
+                        }
+                    } else if (result.status === 'rejected') {
+                        console.error("Promise.allSettled (Trends)에서 거부된 약속:", result.reason);
+                    }
+                });
+                
+                renderMultiIntervalResults(overallData);
+
+            } catch (error) { 
+                console.error("분석 프로세스 중 예기치 않은 오류 발생:", error);
+                if (errorMessageDiv.classList.contains('hidden') || !errorMessageDiv.textContent) {
+                    const specificMessage = error && error.message ? error.message : "알 수 없는 세부 정보";
+                    showError(`분석 중 오류 발생: ${specificMessage}`);
+                    addApiLog(`분석 중 오류 발생: ${specificMessage}`, true);
+                }
+                 summaryTableContainerDiv.innerHTML = `<p class="text-center text-red-400">분석 중 심각한 오류가 발생했습니다: ${error.message || "세부 정보 없음"}</p>`;
+                 summaryTableContainerDiv.classList.remove('hidden');
+            } finally {
+                loadingDiv.classList.add('hidden'); 
+                // analyzeBtn.disabled = false; // 버튼이 없으므로 주석 처리
+                scheduleNextPreciseRefresh(); // 다음 분석 예약
+            }
+        }
+
+        /**
+         * Schedules the next analysis to run at the next precise 5-minute mark.
+         */
+        function scheduleNextPreciseRefresh() {
+            if (analysisTimeoutId) {
+                clearTimeout(analysisTimeoutId); // 혹시 모를 중복 타이머 방지
+            }
+            const now = new Date();
+            const currentMinutes = now.getMinutes();
+            const currentSeconds = now.getSeconds();
+            const currentMilliseconds = now.getMilliseconds();
+
+            const minutesToNextInterval = 5 - (currentMinutes % 5);
+            let secondsToNextInterval = 0;
+            let millisecondsToNextInterval = 0;
+
+            if (currentMinutes % 5 === 0 && currentSeconds === 0 && currentMilliseconds === 0) {
+                // 정확히 5분 간격에 이미 도달한 경우, 다음 5분 후로 설정
+                secondsToNextInterval = REFRESH_INTERVAL_MS / 1000;
+            } else {
+                secondsToNextInterval = (minutesToNextInterval * 60) - currentSeconds -1; // -1 for milliseconds
+                millisecondsToNextInterval = 1000 - currentMilliseconds;
+            }
+            
+            const totalMillisecondsToWait = (secondsToNextInterval * 1000) + millisecondsToNextInterval;
+
+            addApiLog(`다음 자동 분석까지 ${Math.round(totalMillisecondsToWait / 1000)}초 남음 (예정 시각: ${new Date(now.getTime() + totalMillisecondsToWait).toLocaleTimeString('ko-KR')})`);
+            
+            analysisTimeoutId = setTimeout(performAnalysis, totalMillisecondsToWait);
+        }
+
+
+        // 페이지 로드 시 첫 분석 실행
+        window.onload = () => {
+            performAnalysis(); // 첫 분석 즉시 실행 후, 내부에서 다음 분석 예약
+        };
+
+    </script>
+</body>
+</html>
