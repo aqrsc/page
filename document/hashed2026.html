@@ -1,381 +1,443 @@
-import React, { useState } from 'react';
-import { 
-  BookOpen, 
-  ExternalLink, 
-  ChevronRight, 
-  BarChart2, 
-  ShieldCheck, 
-  Globe, 
-  Target, 
-  Briefcase,
-  AlertTriangle,
-  FileText
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Protocol Economy: Hashed 2026 Thesis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Merriweather', serif; }
+        html { scroll-behavior: smooth; }
+        .prose p { margin-bottom: 1.25em; line-height: 1.75; }
+    </style>
+</head>
+<body class="bg-[#f3f4f6] text-slate-800 antialiased selection:bg-blue-100 pb-20">
 
-const ResearchPaper = () => {
-  const [activeSection, setActiveSection] = useState('executive-summary');
-
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setActiveSection(id);
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-[#f3f4f6] text-slate-800 font-sans selection:bg-blue-100 pb-20">
-      {/* Top Navigation Bar */}
-      <nav className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm px-6 py-3 flex justify-between items-center">
-        <div className="flex items-center gap-2 font-semibold text-slate-700">
-          <BookOpen size={20} className="text-blue-900" />
-          <span>Research Digest</span>
+    <!-- Top Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm px-6 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-2 font-semibold text-slate-700">
+            <!-- Icon: BookOpen -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-900"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+            <span>Research Digest</span>
         </div>
-        <div className="text-xs text-slate-500 hidden sm:block">
-          Source: Hashed Official Medium
+        <div class="text-xs text-slate-500 hidden sm:block">
+            Source: Hashed Official Medium
         </div>
-      </nav>
+    </nav>
 
-      <div className="max-w-5xl mx-auto mt-10 px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto mt-10 px-4 sm:px-6 lg:px-8">
         
-        {/* Paper Header / Cover */}
-        <header className="bg-white p-10 rounded-t-xl shadow-sm border-b border-slate-100">
-          <div className="inline-block px-3 py-1 mb-6 text-xs font-bold tracking-wider text-blue-800 uppercase bg-blue-50 rounded-sm border border-blue-100">
-            Market Strategy & Outlook
-          </div>
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-slate-900 mb-6 leading-tight">
-            The Protocol Economy: <br />
-            <span className="text-slate-600">Hashed 2026 Thesis</span>
-          </h1>
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-t border-slate-100 pt-6">
-            <div>
-              <p className="text-sm text-slate-500 uppercase tracking-wide font-semibold mb-1">Original Source</p>
-              <a 
-                href="https://medium.com/hashed-official/the-protocol-economy-hashed-2026-3d3991bfa382?postPublishedType=repub" 
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 text-blue-700 hover:text-blue-900 font-medium transition-colors"
-              >
-                Hashed Official Medium <ExternalLink size={14} />
-              </a>
+        <!-- Paper Header / Cover -->
+        <header class="bg-white p-6 sm:p-10 rounded-t-xl shadow-sm border-b border-slate-100">
+            <div class="inline-block px-3 py-1 mb-6 text-xs font-bold tracking-wider text-blue-800 uppercase bg-blue-50 rounded-sm border border-blue-100">
+                Market Strategy & Outlook
             </div>
-            <div className="text-right md:text-left">
-              <p className="text-sm text-slate-500 uppercase tracking-wide font-semibold mb-1">Date</p>
-              <p className="font-medium text-slate-900">December 2025</p>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-6 leading-tight">
+                The Protocol Economy: <br />
+                <span class="text-slate-600 font-normal">Hashed 2026 Thesis</span>
+            </h1>
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 border-t border-slate-100 pt-6">
+                <div>
+                    <p class="text-xs text-slate-500 uppercase tracking-wide font-bold mb-1">Original Source</p>
+                    <a href="https://medium.com/hashed-official/the-protocol-economy-hashed-2026-3d3991bfa382?postPublishedType=repub" target="_blank" rel="noreferrer" class="flex items-center gap-2 text-blue-700 hover:text-blue-900 font-medium transition-colors text-sm sm:text-base">
+                        Hashed Official Medium
+                        <!-- Icon: ExternalLink -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    </a>
+                </div>
+                <div class="text-left md:text-right">
+                    <p class="text-xs text-slate-500 uppercase tracking-wide font-bold mb-1">Date</p>
+                    <p class="font-medium text-slate-900">December 2025</p>
+                </div>
             </div>
-          </div>
         </header>
 
-        <div className="flex flex-col lg:flex-row gap-8 mt-8">
-          
-          {/* Sidebar / Table of Contents */}
-          <aside className="lg:w-64 shrink-0">
-            <div className="sticky top-24 bg-white rounded-lg shadow-sm border border-slate-200 p-4">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 px-2">Contents</h3>
-              <nav className="space-y-1">
-                {[
-                  { id: 'executive-summary', label: '1. Executive Summary' },
-                  { id: 'market-conviction', label: '2. Strategic Conviction' },
-                  { id: 'sector-analysis', label: '3. Sector Analysis' },
-                  { id: 'regulation', label: '4. Regulatory Landscape' },
-                  { id: 'conclusion', label: '5. Conclusion' },
-                ].map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => scrollToSection(item.id)}
-                    className={`w-full text-left px-3 py-2 text-sm rounded-md transition-colors ${
-                      activeSection === item.id
-                        ? 'bg-blue-50 text-blue-700 font-medium'
-                        : 'text-slate-600 hover:bg-slate-50'
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </nav>
-              
-              <div className="mt-8 px-2">
-                <div className="p-4 bg-slate-50 rounded border border-slate-100 text-xs text-slate-500 leading-relaxed">
-                  <strong>Note:</strong> This document is a summarized digest of the original article published by Hashed.
+        <div class="flex flex-col lg:flex-row gap-8 mt-8">
+            
+            <!-- Sidebar / Table of Contents -->
+            <aside class="lg:w-64 shrink-0">
+                <div class="lg:sticky lg:top-24 bg-white rounded-lg shadow-sm border border-slate-200 p-4">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 px-2">Contents</h3>
+                    <nav class="space-y-1" id="toc">
+                        <a href="#executive-summary" class="block w-full text-left px-3 py-2 text-sm rounded-md transition-colors text-slate-600 hover:bg-slate-50 nav-link bg-blue-50 text-blue-700 font-medium" data-target="executive-summary">1. Executive Summary</a>
+                        <a href="#market-conviction" class="block w-full text-left px-3 py-2 text-sm rounded-md transition-colors text-slate-600 hover:bg-slate-50 nav-link" data-target="market-conviction">2. Strategic Conviction</a>
+                        <a href="#sector-analysis" class="block w-full text-left px-3 py-2 text-sm rounded-md transition-colors text-slate-600 hover:bg-slate-50 nav-link" data-target="sector-analysis">3. Sector Analysis</a>
+                        <a href="#regulation" class="block w-full text-left px-3 py-2 text-sm rounded-md transition-colors text-slate-600 hover:bg-slate-50 nav-link" data-target="regulation">4. Regulatory Landscape</a>
+                        <a href="#conclusion" class="block w-full text-left px-3 py-2 text-sm rounded-md transition-colors text-slate-600 hover:bg-slate-50 nav-link" data-target="conclusion">5. Conclusion</a>
+                    </nav>
+                    
+                    <div class="mt-8 px-2">
+                        <div class="p-4 bg-slate-50 rounded border border-slate-100 text-xs text-slate-500 leading-relaxed">
+                            <strong>Note:</strong> This document is a summarized digest of the original article published by Hashed.
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </aside>
+            </aside>
 
-          {/* Main Content Area */}
-          <main className="flex-1 space-y-12">
+            <!-- Main Content Area -->
+            <main class="flex-1 space-y-12">
 
-            {/* 1. Executive Summary */}
-            <section id="executive-summary" className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 scroll-mt-24">
-              <h2 className="text-2xl font-serif font-bold text-slate-900 mb-6 flex items-center gap-3">
-                <span className="text-blue-600 text-lg font-sans font-bold">01</span> Executive Summary
-              </h2>
-              <div className="prose prose-slate max-w-none">
-                <p className="text-lg leading-relaxed text-slate-700">
-                  2025년은 암호화폐 시장이 <strong>"아이디어(Idea)"</strong>에서 <strong>"실행(Execution)"</strong>의 단계로 완전히 전환된 해로 정의됩니다. 
-                  지난 10년간 시장을 지배해온 '인프라 구축' 경쟁이 일단락되었으며, 이제는 실제 매출(Revenue)과 유저(User), 
-                  그리고 제도권 규제 정합성을 갖춘 프로토콜만이 살아남는 <strong>"프로토콜 경제와 앱의 시대"</strong>가 도래했습니다.
-                </p>
-                
-                <div className="my-8 grid grid-cols-1 md:grid-cols-3 gap-4 not-prose">
-                  <SummaryCard 
-                    title="Market Maturity" 
-                    desc="느리고 비싼 인프라 시대 종료. L2, Solana, LayerZero 등을 통해 실사용 가능한 UX 달성."
-                    icon={<BarChart2 size={20} className="text-emerald-600" />}
-                    color="bg-emerald-50 border-emerald-100"
-                  />
-                  <SummaryCard 
-                    title="Institutionalization" 
-                    desc="스테이블코인 시총 3,000억 달러 돌파. 불확실한 실험에서 글로벌 결제 레일로 격상."
-                    icon={<ShieldCheck size={20} className="text-blue-600" />}
-                    color="bg-blue-50 border-blue-100"
-                  />
-                  <SummaryCard 
-                    title="Agent Economy" 
-                    desc="경제의 기본 단위가 사람(User)에서 AI 에이전트(Agent)로 이동하는 패러다임 시프트."
-                    icon={<Target size={20} className="text-purple-600" />}
-                    color="bg-purple-50 border-purple-100"
-                  />
-                </div>
-              </div>
-            </section>
+                <!-- 1. Executive Summary -->
+                <section id="executive-summary" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8 scroll-mt-24 section-container">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3 border-b border-slate-100 pb-4">
+                        <span class="text-blue-600 text-lg font-sans font-bold">01</span> Executive Summary
+                    </h2>
+                    <div class="prose prose-slate max-w-none text-slate-700">
+                        <p class="text-lg leading-relaxed">
+                            2025년은 암호화폐 시장이 <strong>"아이디어(Idea)"</strong>에서 <strong>"실행(Execution)"</strong>의 단계로 완전히 전환된 해로 정의됩니다. 
+                            지난 10년간 시장을 지배해온 '인프라 구축' 경쟁이 일단락되었으며, 이제는 실제 매출(Revenue)과 유저(User), 
+                            그리고 제도권 규제 정합성을 갖춘 프로토콜만이 살아남는 <strong>"프로토콜 경제와 앱의 시대"</strong>가 도래했습니다.
+                        </p>
+                        
+                        <div class="my-8 grid grid-cols-1 md:grid-cols-3 gap-4 not-prose">
+                            <!-- Card 1 -->
+                            <div class="p-5 rounded-lg border bg-emerald-50 border-emerald-100 h-full">
+                                <div class="mb-3 text-emerald-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+                                </div>
+                                <h3 class="font-bold text-slate-800 mb-2 text-sm uppercase tracking-wide">Market Maturity</h3>
+                                <p class="text-sm text-slate-600 leading-snug">느리고 비싼 인프라 시대 종료. L2, Solana, LayerZero 등을 통해 실사용 가능한 UX 달성.</p>
+                            </div>
+                            <!-- Card 2 -->
+                            <div class="p-5 rounded-lg border bg-blue-50 border-blue-100 h-full">
+                                <div class="mb-3 text-blue-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                                </div>
+                                <h3 class="font-bold text-slate-800 mb-2 text-sm uppercase tracking-wide">Institutionalization</h3>
+                                <p class="text-sm text-slate-600 leading-snug">스테이블코인 시총 3,000억 달러 돌파. 불확실한 실험에서 글로벌 결제 레일로 격상.</p>
+                            </div>
+                            <!-- Card 3 -->
+                            <div class="p-5 rounded-lg border bg-purple-50 border-purple-100 h-full">
+                                <div class="mb-3 text-purple-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                                </div>
+                                <h3 class="font-bold text-slate-800 mb-2 text-sm uppercase tracking-wide">Agent Economy</h3>
+                                <p class="text-sm text-slate-600 leading-snug">경제의 기본 단위가 사람(User)에서 AI 에이전트(Agent)로 이동하는 패러다임 시프트.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-            {/* 2. Strategic Conviction */}
-            <section id="market-conviction" className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 scroll-mt-24">
-              <h2 className="text-2xl font-serif font-bold text-slate-900 mb-6 flex items-center gap-3">
-                <span className="text-blue-600 text-lg font-sans font-bold">02</span> Strategic Conviction
-              </h2>
-              <p className="text-slate-600 mb-6">
-                해시드는 2025년 투자 전략에서 명확한 <strong>선별적 확신(Selective Conviction)</strong> 기조를 유지했습니다. 
-                단순한 복제나 내러티브 의존형 프로젝트를 배제하고, 실질적인 해자(Moat)를 구축한 분야에 집중했습니다.
-              </p>
+                <!-- 2. Strategic Conviction -->
+                <section id="market-conviction" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8 scroll-mt-24 section-container">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3 border-b border-slate-100 pb-4">
+                        <span class="text-blue-600 text-lg font-sans font-bold">02</span> Strategic Conviction
+                    </h2>
+                    <p class="text-slate-600 mb-6">
+                        해시드는 2025년 투자 전략에서 명확한 <strong>선별적 확신(Selective Conviction)</strong> 기조를 유지했습니다. 
+                        단순한 복제나 내러티브 의존형 프로젝트를 배제하고, 실질적인 해자(Moat)를 구축한 분야에 집중했습니다.
+                    </p>
 
-              <div className="overflow-hidden border border-slate-200 rounded-lg">
-                <table className="w-full text-sm text-left">
-                  <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
-                    <tr>
-                      <th className="px-6 py-4 w-1/4">Sector</th>
-                      <th className="px-6 py-4 w-1/3 text-red-600">Avoid (Pass)</th>
-                      <th className="px-6 py-4 w-1/3 text-blue-700">Conviction (Bet)</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    <TableRow 
-                      sector="Stablecoin"
-                      avoid="규제/BM이 약한 중앙화 스테이블코인"
-                      bet="Bastion (규제 인프라 플레이)"
-                      note="발행, 커스터디, 컴플라이언스 통합 역량 중시"
-                    />
-                    <TableRow 
-                      sector="New L1"
-                      avoid="단순 포크/복제 L1 체인"
-                      bet="Rialo (Real Data Integration)"
-                      note="웹 데이터와 호출을 체인 네이티브로 처리하는 차별점"
-                    />
-                    <TableRow 
-                      sector="AI x Crypto"
-                      avoid="실체 없는 'AI 체인' 내러티브"
-                      bet="Kite AI (Agent Infrastructure)"
-                      note="에이전트용 결제, ID, 정책 기반 지출 레이어"
-                    />
-                    <TableRow 
-                      sector="Treasury"
-                      avoid="단순 BTC/ETH 레버리지 베타"
-                      bet="StablecoinX (Ethena Eco)"
-                      note="델타 중립 전략 및 대체 스테이블코인 이코노믹스"
-                    />
-                  </tbody>
-                </table>
-              </div>
-            </section>
+                    <div class="overflow-x-auto border border-slate-200 rounded-lg">
+                        <table class="w-full text-sm text-left min-w-[600px]">
+                            <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
+                                <tr>
+                                    <th class="px-6 py-4 w-1/4">Sector</th>
+                                    <th class="px-6 py-4 w-1/3 text-red-600">Avoid (Pass)</th>
+                                    <th class="px-6 py-4 w-1/3 text-blue-700">Conviction (Bet)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <!-- Row 1 -->
+                                <tr class="bg-white hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-slate-900 border-r border-slate-100">Stablecoin</td>
+                                    <td class="px-6 py-4 text-slate-500 border-r border-slate-100 bg-red-50/30">
+                                        <div class="flex items-start gap-2">
+                                            <span class="text-red-400 font-bold text-xs mt-0.5">✕</span>
+                                            <span>규제/BM이 약한 중앙화 스테이블코인</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-slate-700 bg-blue-50/30">
+                                        <div class="flex flex-col">
+                                            <div class="flex items-center gap-2 font-semibold text-blue-800 mb-1">
+                                                <span class="text-blue-500 text-xs">●</span>
+                                                Bastion (규제 인프라 플레이)
+                                            </div>
+                                            <span class="text-xs text-slate-500">발행, 커스터디, 컴플라이언스 통합 역량 중시</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Row 2 -->
+                                <tr class="bg-white hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-slate-900 border-r border-slate-100">New L1</td>
+                                    <td class="px-6 py-4 text-slate-500 border-r border-slate-100 bg-red-50/30">
+                                        <div class="flex items-start gap-2">
+                                            <span class="text-red-400 font-bold text-xs mt-0.5">✕</span>
+                                            <span>단순 포크/복제 L1 체인</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-slate-700 bg-blue-50/30">
+                                        <div class="flex flex-col">
+                                            <div class="flex items-center gap-2 font-semibold text-blue-800 mb-1">
+                                                <span class="text-blue-500 text-xs">●</span>
+                                                Rialo (Real Data Integration)
+                                            </div>
+                                            <span class="text-xs text-slate-500">웹 데이터와 호출을 체인 네이티브로 처리하는 차별점</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Row 3 -->
+                                <tr class="bg-white hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-slate-900 border-r border-slate-100">AI x Crypto</td>
+                                    <td class="px-6 py-4 text-slate-500 border-r border-slate-100 bg-red-50/30">
+                                        <div class="flex items-start gap-2">
+                                            <span class="text-red-400 font-bold text-xs mt-0.5">✕</span>
+                                            <span>실체 없는 'AI 체인' 내러티브</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-slate-700 bg-blue-50/30">
+                                        <div class="flex flex-col">
+                                            <div class="flex items-center gap-2 font-semibold text-blue-800 mb-1">
+                                                <span class="text-blue-500 text-xs">●</span>
+                                                Kite AI (Agent Infrastructure)
+                                            </div>
+                                            <span class="text-xs text-slate-500">에이전트용 결제, ID, 정책 기반 지출 레이어</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Row 4 -->
+                                <tr class="bg-white hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-slate-900 border-r border-slate-100">Treasury</td>
+                                    <td class="px-6 py-4 text-slate-500 border-r border-slate-100 bg-red-50/30">
+                                        <div class="flex items-start gap-2">
+                                            <span class="text-red-400 font-bold text-xs mt-0.5">✕</span>
+                                            <span>단순 BTC/ETH 레버리지 베타</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-slate-700 bg-blue-50/30">
+                                        <div class="flex flex-col">
+                                            <div class="flex items-center gap-2 font-semibold text-blue-800 mb-1">
+                                                <span class="text-blue-500 text-xs">●</span>
+                                                StablecoinX (Ethena Eco)
+                                            </div>
+                                            <span class="text-xs text-slate-500">델타 중립 전략 및 대체 스테이블코인 이코노믹스</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
 
-            {/* 3. Sector Analysis */}
-            <section id="sector-analysis" className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 scroll-mt-24">
-              <h2 className="text-2xl font-serif font-bold text-slate-900 mb-6 flex items-center gap-3">
-                <span className="text-blue-600 text-lg font-sans font-bold">03</span> Sector Analysis
-              </h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <AnalysisBlock 
-                  title="Web3 Development & AI"
-                  analyst="Simon Kim"
-                  content="Web2 개발자의 80%가 AI 코파일럿을 사용하는 반면, Web3 개발자는 극소수입니다. AI가 이 격차를 해소하며 Web3 개발을 대중화할 것입니다. 주목해야 할 레이어는 'Web3용 AI 개발 플랫폼', '도메인 특화 버티컬 빌더', 그리고 '자동화된 보안 감사'입니다."
-                />
-                <AnalysisBlock 
-                  title="Privacy as Next Scaling"
-                  analyst="Baek Kim"
-                  content="속도와 수수료 문제는 해결되었습니다. 다음 병목은 프라이버시입니다. 기관과 AI는 모든 데이터를 투명 원장에 공개할 수 없습니다. 2026년의 승자는 ZK 네이티브 실행 레이어, FHE 호환 환경, 그리고 컨피덴셜 컴퓨팅 레이어가 될 것입니다."
-                />
-                <AnalysisBlock 
-                  title="Regulated DeFi & RWA"
-                  analyst="Ryan Kim"
-                  content="시장은 고베타 자산에서 '검증 가능한 캐시플로우'로 이동 중입니다. RWA는 단순 이자 상품이 아니라 실제 오프체인 워크플로우(인보이스, 무역금융)의 온체인 연결입니다. 규제된 디파이(Regulated DeFi) 스택의 탄생을 예고합니다."
-                />
-                <AnalysisBlock 
-                  title="Tokenized Private Credit"
-                  analyst="SJ Baek"
-                  content="3조 달러 규모의 사모 대출(Private Credit) 시장은 온체인과 구조적으로 적합합니다. 토큰화가 유동성과 투명성 문제를 해결하며, 2026년 첫 본격적인 온체인 채권 시장이 열릴 것입니다."
-                />
-              </div>
+                <!-- 3. Sector Analysis -->
+                <section id="sector-analysis" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8 scroll-mt-24 section-container">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3 border-b border-slate-100 pb-4">
+                        <span class="text-blue-600 text-lg font-sans font-bold">03</span> Sector Analysis
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Analysis Block 1 -->
+                        <div class="group">
+                            <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-700 transition-colors flex items-center justify-between">
+                                Web3 Development & AI
+                                <span class="text-xs font-normal text-slate-400 bg-slate-100 px-2 py-1 rounded-full font-sans">Simon Kim</span>
+                            </h3>
+                            <p class="text-sm text-slate-600 leading-relaxed border-l-2 border-slate-200 pl-4 group-hover:border-blue-300 transition-colors">
+                                Web2 개발자의 80%가 AI 코파일럿을 사용하는 반면, Web3 개발자는 극소수입니다. AI가 이 격차를 해소하며 Web3 개발을 대중화할 것입니다. 주목해야 할 레이어는 'Web3용 AI 개발 플랫폼', '도메인 특화 버티컬 빌더', 그리고 '자동화된 보안 감사'입니다.
+                            </p>
+                        </div>
+                        <!-- Analysis Block 2 -->
+                        <div class="group">
+                            <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-700 transition-colors flex items-center justify-between">
+                                Privacy as Next Scaling
+                                <span class="text-xs font-normal text-slate-400 bg-slate-100 px-2 py-1 rounded-full font-sans">Baek Kim</span>
+                            </h3>
+                            <p class="text-sm text-slate-600 leading-relaxed border-l-2 border-slate-200 pl-4 group-hover:border-blue-300 transition-colors">
+                                속도와 수수료 문제는 해결되었습니다. 다음 병목은 프라이버시입니다. 기관과 AI는 모든 데이터를 투명 원장에 공개할 수 없습니다. 2026년의 승자는 ZK 네이티브 실행 레이어, FHE 호환 환경, 그리고 컨피덴셜 컴퓨팅 레이어가 될 것입니다.
+                            </p>
+                        </div>
+                        <!-- Analysis Block 3 -->
+                        <div class="group">
+                            <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-700 transition-colors flex items-center justify-between">
+                                Regulated DeFi & RWA
+                                <span class="text-xs font-normal text-slate-400 bg-slate-100 px-2 py-1 rounded-full font-sans">Ryan Kim</span>
+                            </h3>
+                            <p class="text-sm text-slate-600 leading-relaxed border-l-2 border-slate-200 pl-4 group-hover:border-blue-300 transition-colors">
+                                시장은 고베타 자산에서 '검증 가능한 캐시플로우'로 이동 중입니다. RWA는 단순 이자 상품이 아니라 실제 오프체인 워크플로우(인보이스, 무역금융)의 온체인 연결입니다. 규제된 디파이(Regulated DeFi) 스택의 탄생을 예고합니다.
+                            </p>
+                        </div>
+                        <!-- Analysis Block 4 -->
+                        <div class="group">
+                            <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-700 transition-colors flex items-center justify-between">
+                                Tokenized Private Credit
+                                <span class="text-xs font-normal text-slate-400 bg-slate-100 px-2 py-1 rounded-full font-sans">SJ Baek</span>
+                            </h3>
+                            <p class="text-sm text-slate-600 leading-relaxed border-l-2 border-slate-200 pl-4 group-hover:border-blue-300 transition-colors">
+                                3조 달러 규모의 사모 대출(Private Credit) 시장은 온체인과 구조적으로 적합합니다. 토큰화가 유동성과 투명성 문제를 해결하며, 2026년 첫 본격적인 온체인 채권 시장이 열릴 것입니다.
+                            </p>
+                        </div>
+                    </div>
 
-              <div className="mt-8 p-6 bg-slate-50 rounded-lg border border-slate-200">
-                <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
-                  <AlertTriangle size={18} className="text-amber-500" />
-                  Key Risk Indicator: ETH/BTC Ratio
-                </h3>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  Edward Tan 파트너는 <strong>ETH/BTC 비율</strong>을 리스크 온/오프를 판단하는 핵심 나침반으로 제시합니다. 
-                  비트코인 독주 체제에서 ETH/BTC가 하락할 때는 알트코인 장세가 오기 어렵습니다. 
-                  2026년에도 이 비율과 온체인 Revenue 데이터를 함께 분석하여 자본이 정당하게 축적되는 섹터를 판별해야 합니다.
-                </p>
-              </div>
-            </section>
+                    <div class="mt-8 p-6 bg-slate-50 rounded-lg border border-slate-200">
+                        <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
+                            <!-- Icon: AlertTriangle -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                            Key Risk Indicator: ETH/BTC Ratio
+                        </h3>
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            Edward Tan 파트너는 <strong>ETH/BTC 비율</strong>을 리스크 온/오프를 판단하는 핵심 나침반으로 제시합니다. 
+                            비트코인 독주 체제에서 ETH/BTC가 하락할 때는 알트코인 장세가 오기 어렵습니다. 
+                            2026년에도 이 비율과 온체인 Revenue 데이터를 함께 분석하여 자본이 정당하게 축적되는 섹터를 판별해야 합니다.
+                        </p>
+                    </div>
+                </section>
 
-            {/* 4. Regulation */}
-            <section id="regulation" className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 scroll-mt-24">
-              <h2 className="text-2xl font-serif font-bold text-slate-900 mb-6 flex items-center gap-3">
-                <span className="text-blue-600 text-lg font-sans font-bold">04</span> Regulatory Landscape
-              </h2>
-              <p className="text-slate-600 mb-8">
-                2025년은 규제가 '집행(Enforcement)' 중심의 혼란기에서 '설계(Architecture)' 중심의 통합기로 넘어간 분기점입니다.
-              </p>
+                <!-- 4. Regulation -->
+                <section id="regulation" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8 scroll-mt-24 section-container">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3 border-b border-slate-100 pb-4">
+                        <span class="text-blue-600 text-lg font-sans font-bold">04</span> Regulatory Landscape
+                    </h2>
+                    <p class="text-slate-600 mb-8">
+                        2025년은 규제가 '집행(Enforcement)' 중심의 혼란기에서 '설계(Architecture)' 중심의 통합기로 넘어간 분기점입니다.
+                    </p>
 
-              <div className="space-y-6">
-                <RegItem 
-                  country="United States" 
-                  flag="🇺🇸"
-                  status="Convergence"
-                  desc="GENIUS Act(스테이블코인), CLARITY Act 등 연방 차원의 프레임워크 마련. 토큰화 국채 및 RWA 시장 성장의 제도적 기반 완성."
-                />
-                <RegItem 
-                  country="South Korea" 
-                  flag="🇰🇷"
-                  status="Dual Track"
-                  desc="자본시장법과 가상자산법의 듀얼 트랙 구축. AI G3 전략과 연계하여 디지털 인프라 허브를 목표로 원화 스테이블코인 논의 확장."
-                />
-                <RegItem 
-                  country="UAE (Dubai/Abu Dhabi)" 
-                  flag="🇦🇪"
-                  status="Advanced Framework"
-                  desc="VARA Rulebook 2.0 및 ADGM 스테이킹 규율 등 가장 정교한 규제 아키텍처 구축. 글로벌 크립토 기업의 허브로 자리매김."
-                />
-              </div>
-            </section>
+                    <div class="space-y-6">
+                        <!-- US -->
+                        <div class="flex gap-4 items-start p-4 rounded-lg border border-slate-100 hover:border-slate-300 transition-all bg-slate-50/50">
+                            <div class="text-2xl shadow-sm rounded-full bg-white w-10 h-10 flex items-center justify-center shrink-0 border border-slate-100">
+                                🇺🇸
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-3 mb-1 flex-wrap">
+                                    <h4 class="font-bold text-slate-800">United States</h4>
+                                    <span class="text-xs font-semibold px-2 py-0.5 bg-slate-200 text-slate-600 rounded-full">Convergence</span>
+                                </div>
+                                <p class="text-sm text-slate-600">GENIUS Act(스테이블코인), CLARITY Act 등 연방 차원의 프레임워크 마련. 토큰화 국채 및 RWA 시장 성장의 제도적 기반 완성.</p>
+                            </div>
+                        </div>
+                        <!-- KR -->
+                        <div class="flex gap-4 items-start p-4 rounded-lg border border-slate-100 hover:border-slate-300 transition-all bg-slate-50/50">
+                            <div class="text-2xl shadow-sm rounded-full bg-white w-10 h-10 flex items-center justify-center shrink-0 border border-slate-100">
+                                🇰🇷
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-3 mb-1 flex-wrap">
+                                    <h4 class="font-bold text-slate-800">South Korea</h4>
+                                    <span class="text-xs font-semibold px-2 py-0.5 bg-slate-200 text-slate-600 rounded-full">Dual Track</span>
+                                </div>
+                                <p class="text-sm text-slate-600">자본시장법과 가상자산법의 듀얼 트랙 구축. AI G3 전략과 연계하여 디지털 인프라 허브를 목표로 원화 스테이블코인 논의 확장.</p>
+                            </div>
+                        </div>
+                        <!-- UAE -->
+                        <div class="flex gap-4 items-start p-4 rounded-lg border border-slate-100 hover:border-slate-300 transition-all bg-slate-50/50">
+                            <div class="text-2xl shadow-sm rounded-full bg-white w-10 h-10 flex items-center justify-center shrink-0 border border-slate-100">
+                                🇦🇪
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-3 mb-1 flex-wrap">
+                                    <h4 class="font-bold text-slate-800">UAE (Dubai/Abu Dhabi)</h4>
+                                    <span class="text-xs font-semibold px-2 py-0.5 bg-slate-200 text-slate-600 rounded-full">Advanced Framework</span>
+                                </div>
+                                <p class="text-sm text-slate-600">VARA Rulebook 2.0 및 ADGM 스테이킹 규율 등 가장 정교한 규제 아키텍처 구축. 글로벌 크립토 기업의 허브로 자리매김.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-             {/* 5. Conclusion */}
-             <section id="conclusion" className="bg-slate-900 text-white rounded-xl shadow-lg p-10 scroll-mt-24">
-              <h2 className="text-2xl font-serif font-bold mb-6 text-white">
-                Conclusion: 2026 Outlook
-              </h2>
-              <div className="space-y-6 text-slate-300">
-                <p className="leading-relaxed">
-                  앞으로 시장의 프런티어는 "새로운 L1"이나 "단순 토큰 발행"이 아닙니다. 
-                  <strong>실제 워크플로우와 현금흐름(Cashflow)을 장악하는 애플리케이션과 프로토콜</strong>이 시장을 주도할 것입니다.
-                </p>
-                
-                <div className="border-t border-white/20 pt-6">
-                  <h3 className="text-white font-bold mb-4">Core Themes for 2026</h3>
-                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
-                      스테이블코인 인프라 및 엔터프라이즈 통합
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
-                      RWA, 토큰화 프라이빗 크레딧, Regulated DeFi
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
-                      ZK/FHE/MPC 기반 프라이버시 실행 레이어
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
-                      AI 에이전트용 ID/결제/컴퓨팅 인프라
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </section>
+                 <!-- 5. Conclusion -->
+                 <section id="conclusion" class="bg-slate-900 text-white rounded-xl shadow-lg p-6 sm:p-10 scroll-mt-24 section-container">
+                    <h2 class="text-2xl font-bold mb-6 text-white font-serif">
+                        Conclusion: 2026 Outlook
+                    </h2>
+                    <div class="space-y-6 text-slate-300">
+                        <p class="leading-relaxed">
+                            앞으로 시장의 프런티어는 "새로운 L1"이나 "단순 토큰 발행"이 아닙니다. 
+                            <strong>실제 워크플로우와 현금흐름(Cashflow)을 장악하는 애플리케이션과 프로토콜</strong>이 시장을 주도할 것입니다.
+                        </p>
+                        
+                        <div class="border-t border-white/20 pt-6">
+                            <h3 class="text-white font-bold mb-4">Core Themes for 2026</h3>
+                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <li class="flex items-center gap-2">
+                                    <div class="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                                    스테이블코인 인프라 및 엔터프라이즈 통합
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <div class="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                                    RWA, 토큰화 프라이빗 크레딧, Regulated DeFi
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <div class="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                                    ZK/FHE/MPC 기반 프라이버시 실행 레이어
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <div class="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                                    AI 에이전트용 ID/결제/컴퓨팅 인프라
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
 
-          </main>
+            </main>
         </div>
 
-        <footer className="mt-20 border-t border-slate-200 pt-8 text-center text-slate-500 pb-10">
-          <p className="text-sm font-medium mb-2">Hashed 2026 Protocol Economy Thesis Visualization</p>
-          <p className="text-xs max-w-2xl mx-auto leading-relaxed">
-            This report is a summarized visualization based on the original article by Hashed. 
-            The content is provided for informational purposes only and does not constitute investment advice.
-          </p>
-          <a 
-            href="https://medium.com/hashed-official/the-protocol-economy-hashed-2026-3d3991bfa382?postPublishedType=repub" 
-            target="_blank" 
-            rel="noreferrer"
-            className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 mt-4 transition-colors"
-          >
-            Read Original Article <ExternalLink size={10} />
-          </a>
+        <footer class="mt-20 border-t border-slate-200 pt-8 text-center text-slate-500 pb-10">
+            <p class="text-sm font-medium mb-2">Hashed 2026 Protocol Economy Thesis Visualization</p>
+            <p class="text-xs max-w-2xl mx-auto leading-relaxed px-4">
+                This report is a summarized visualization based on the original article by Hashed. 
+                The content is provided for informational purposes only and does not constitute investment advice.
+            </p>
+            <a href="https://medium.com/hashed-official/the-protocol-economy-hashed-2026-3d3991bfa382?postPublishedType=repub" target="_blank" rel="noreferrer" class="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 mt-4 transition-colors">
+                Read Original Article 
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
         </footer>
-      </div>
     </div>
-  );
-};
 
-// --- Sub Components ---
+    <!-- Script for Scrollspy & Interactive Behavior -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.section-container');
 
-const SummaryCard = ({ title, desc, icon, color }) => (
-  <div className={`p-5 rounded-lg border ${color} bg-opacity-50 h-full`}>
-    <div className="mb-3">{icon}</div>
-    <h3 className="font-bold text-slate-800 mb-2 text-sm uppercase tracking-wide">{title}</h3>
-    <p className="text-sm text-slate-600 leading-snug">{desc}</p>
-  </div>
-);
+            // 1. Smooth Scroll Handling (already handled by css scroll-behavior, but active state needs JS)
+            const observerOptions = {
+                root: null,
+                rootMargin: '-20% 0px -60% 0px', // Trigger when section is near top
+                threshold: 0
+            };
 
-const TableRow = ({ sector, avoid, bet, note }) => (
-  <tr className="bg-white hover:bg-slate-50 transition-colors">
-    <td className="px-6 py-4 font-medium text-slate-900 border-r border-slate-100">{sector}</td>
-    <td className="px-6 py-4 text-slate-500 border-r border-slate-100 bg-red-50/30">
-      <div className="flex items-start gap-2">
-        <span className="text-red-400 font-bold text-xs mt-0.5">✕</span>
-        <span>{avoid}</span>
-      </div>
-    </td>
-    <td className="px-6 py-4 text-slate-700 bg-blue-50/30">
-      <div className="flex flex-col">
-        <div className="flex items-center gap-2 font-semibold text-blue-800 mb-1">
-          <span className="text-blue-500 text-xs">●</span>
-          {bet}
-        </div>
-        <span className="text-xs text-slate-500">{note}</span>
-      </div>
-    </td>
-  </tr>
-);
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        updateActiveLink(id);
+                    }
+                });
+            }, observerOptions);
 
-const AnalysisBlock = ({ title, analyst, content }) => (
-  <div className="group">
-    <h3 className="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-700 transition-colors flex items-center justify-between">
-      {title}
-      <span className="text-xs font-normal text-slate-400 bg-slate-100 px-2 py-1 rounded-full">{analyst}</span>
-    </h3>
-    <p className="text-sm text-slate-600 leading-relaxed border-l-2 border-slate-200 pl-4 group-hover:border-blue-300 transition-colors">
-      {content}
-    </p>
-  </div>
-);
+            sections.forEach(section => {
+                observer.observe(section);
+            });
 
-const RegItem = ({ country, flag, status, desc }) => (
-  <div className="flex gap-4 items-start p-4 rounded-lg border border-slate-100 hover:border-slate-300 transition-all bg-slate-50/50">
-    <div className="text-2xl shadow-sm rounded-full bg-white w-10 h-10 flex items-center justify-center shrink-0 border border-slate-100">
-      {flag}
-    </div>
-    <div>
-      <div className="flex items-center gap-3 mb-1">
-        <h4 className="font-bold text-slate-800">{country}</h4>
-        <span className="text-xs font-semibold px-2 py-0.5 bg-slate-200 text-slate-600 rounded-full">{status}</span>
-      </div>
-      <p className="text-sm text-slate-600">{desc}</p>
-    </div>
-  </div>
-);
+            function updateActiveLink(id) {
+                navLinks.forEach(link => {
+                    link.classList.remove('bg-blue-50', 'text-blue-700', 'font-medium');
+                    link.classList.add('text-slate-600');
+                    if (link.getAttribute('data-target') === id) {
+                        link.classList.add('bg-blue-50', 'text-blue-700', 'font-medium');
+                        link.classList.remove('text-slate-600');
+                    }
+                });
+            }
 
-export default ResearchPaper;
+            // Click handler for sidebar links to ensure state update immediately
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('data-target');
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        updateActiveLink(targetId);
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
